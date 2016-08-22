@@ -1,3 +1,5 @@
+* purpose
+  try to implement a os kernel in haskell
 * how to run
 ** linux
    #+BEGIN_SRC shell
@@ -6,4 +8,15 @@
    #+END_SRC
 
 ** osx
+
 *TODO*
+
+* references
+
+http://www.brokenthorn.com/Resources/OSDevIndex.html
+
+http://www.independent-software.com/writing-your-own-toy-operating-system/
+
+=hos= in haskell
+
+and much more
