@@ -1,0 +1,9 @@
+* how to run
+** linux
+   #+BEGIN_SRC shell
+   #use 'alt-2' and 'quit' to quit qemu
+   (sudo) make
+   #+END_SRC
+
+** osx
+*TODO*
