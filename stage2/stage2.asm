@@ -15,14 +15,14 @@ org 0x500
   ;	Preprocessor directives
   ;*******************************************************
 
-%include "stdio.inc"			; basic i/o routines
-%include "gdt.inc"			; Gdt routines
+%include "stdio.asm"			; basic i/o routines
+%include "gdt.asm"			; Gdt routines
 
   ;*******************************************************
   ;	Data Section
   ;*******************************************************
 
-  LoadingMsg db "Preparing to load operating system...hah", 0x0D, 0x0A, 0x00
+  LoadingMsg db "Preparing to load operating system...hahxx", 0x0D, 0x0A, 0x00
 
   ;*******************************************************
   ;	STAGE 2 ENTRY POINT
