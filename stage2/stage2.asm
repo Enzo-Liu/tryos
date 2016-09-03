@@ -23,6 +23,10 @@ org 0x500
   ;*******************************************************
 
   LoadingMsg db "Preparing to load operating system...hahxx", 0x0D, 0x0A, 0x00
+  EnabledA20 db "it has enabled a20", 0dh, 0ah, 0h
+  DisabledA20 db "it has disabled a20", 0dh, 0ah, 0h
+  TryMsg db "has try to set a20", 0dh, 0ah, 0h
+
 
   ;*******************************************************
   ;	STAGE 2 ENTRY POINT
@@ -61,10 +65,41 @@ main:
 
 	call	InstallGDT		; install our GDT
 
+  mov ax, 0x2403
+  int 0x15
+  jc PrintEnableA20
+  jnc EnableA20
+
+PrintEnableA20:
+  mov si, EnabledA20
+  call Puts16
+  jmp Pmode
+
+EnableA20:
+  mov cl, 10h
+
+loop:
+  mov ax, 0x2401
+  int 0x15
+
+  mov si, TryMsg
+  call Puts16
+
+  mov ax, 0x2403
+  int 0x15
+  jc PrintEnableA20
+
+  dec cl
+  jne loop
+
+PrintDisabledA20:
+  mov si, DisabledA20
+  call Puts16
+
 	;-------------------------------;
 	;   Go into pmode		;
 	;-------------------------------;
-
+Pmode:
 	cli				; clear interrupts
 	mov	eax, cr0		; set bit 0 in cr0--enter pmode
 	or	eax, 1
