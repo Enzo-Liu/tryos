@@ -22,10 +22,10 @@ ifeq ($(OS), Darwin)
 	hdiutil detach $$disk
 endif
 
-target/stage2.img: target
-	nasm -f bin -o ./target/stage2.img ./stage2/stage2.asm
+target/stage2.img: target stage2/*
+	nasm -f bin -i./stage2/ -o ./target/stage2.img ./stage2/stage2.asm
 
-target/bootloader.bin: target
+target/bootloader.bin: target boot/bootloader.asm
 	nasm -f bin -o ./target/bootloader.bin ./boot/bootloader.asm
 
 target:

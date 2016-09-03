@@ -5,46 +5,99 @@
   ;  Operating Systems Development Series
   ;*********************************************
 
-org 0x0                         ; offset to 0, we will set segments later
+bits 16
 
-bits 16                         ; we are still in real mode
-  ; we are loaded at linear address 0x10000
+org 0x500
 
-  jmp main                      ; jump to main
+  jmp	main				; go to start
 
-  ;*************************************************;
-  ;  Prints a string
-  ;  DS=>SI: 0 terminated string
-  ;************************************************;
+  ;*******************************************************
+  ;	Preprocessor directives
+  ;*******************************************************
 
-Print:
-  lodsb                         ; load next byte from string from SI to AL
-  or      al, al                ; Does AL=0?
-  jz      PrintDone             ; Yep, null terminator found-bail out
-  mov     ah,  0eh              ; Nope-Print the character
-  int     10h
-  jmp     Print                 ; Repeat until null terminator found
+%include "stdio.inc"			; basic i/o routines
+%include "gdt.inc"			; Gdt routines
 
-PrintDone:
-  ret                           ; we are done, so return
+  ;*******************************************************
+  ;	Data Section
+  ;*******************************************************
 
-  ;*************************************************;
-  ;  Second Stage Loader Entry Point
-  ;************************************************;
+  LoadingMsg db "Preparing to load operating system...hah", 0x0D, 0x0A, 0x00
+
+  ;*******************************************************
+  ;	STAGE 2 ENTRY POINT
+  ;
+  ;		-Store BIOS information
+  ;		-Load Kernel
+  ;		-Install GDT; go into protected mode (pmode)
+  ;		-Jump to Stage 3
+  ;*******************************************************
 
 main:
-  cli                           ; clear interrupts
-  push    cs                    ; Insure DS=CS
-  pop     ds
 
-  mov     si, Msg
-  call    Print
+	;-------------------------------;
+	;   Setup segments and stack	;
+	;-------------------------------;
 
-  cli                           ; clear interrupts to prevent triple faults
-  hlt                           ; hault the syst
+	cli				; clear interrupts
+	xor	ax, ax			; null segments
+	mov	ds, ax
+	mov	es, ax
+	mov	ax, 0x9000		; stack begins at 0x9000-0xffff
+	mov	ss, ax
+	mov	sp, 0xFFFF
+	sti				; enable interrupts
 
-  ;*************************************************;
-  ;  Data Section
-  ;************************************************;
+	;-------------------------------;
+	;   Print loading message	;
+	;-------------------------------;
 
-  Msg  db  "Preparing to load operating system...",13,10,0
+	mov	si, LoadingMsg
+	call	Puts16
+
+	;-------------------------------;
+	;   Install our GDT		;
+	;-------------------------------;
+
+	call	InstallGDT		; install our GDT
+
+	;-------------------------------;
+	;   Go into pmode		;
+	;-------------------------------;
+
+	cli				; clear interrupts
+	mov	eax, cr0		; set bit 0 in cr0--enter pmode
+	or	eax, 1
+	mov	cr0, eax
+
+	jmp	08h:Stage3		; far jump to fix CS. Remember that the code selector is 0x8!
+
+	; Note: Do NOT re-enable interrupts! Doing so will triple fault!
+	; We will fix this in Stage 3.
+
+  ;******************************************************
+  ;	ENTRY POINT FOR STAGE 3
+  ;******************************************************
+
+bits 32					; Welcome to the 32 bit world!
+
+Stage3:
+
+	;-------------------------------;
+	;   Set registers		;
+	;-------------------------------;
+
+	mov		ax, 0x10		; set data segments to data selector (0x10)
+	mov		ds, ax
+	mov		ss, ax
+	mov		es, ax
+	mov		esp, 90000h		; stack begins from 90000h
+
+  ;*******************************************************
+  ;	Stop execution
+  ;*******************************************************
+
+STOP:
+
+	cli
+	hlt
