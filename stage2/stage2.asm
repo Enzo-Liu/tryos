@@ -25,6 +25,7 @@ org 0x500
   LoadingMsg db "Preparing to load operating system...hahxx", 0x0D, 0x0A, 0x00
   EnabledA20 db "it has enabled a20", 0dh, 0ah, 0h
   DisabledA20 db "it has disabled a20", 0dh, 0ah, 0h
+  NSA20 db "not support for a20", 0dh, 0ah, 0h
   TryMsg db "has try to set a20", 0dh, 0ah, 0h
 
 
@@ -65,36 +66,45 @@ main:
 
 	call	InstallGDT		; install our GDT
 
+A20Support:
   mov ax, 0x2403
   int 0x15
-  jc PrintEnableA20
-  jnc EnableA20
+  jb PrintNSA20
+  cmp ah, 0
+  jnz PrintNSA20
+
+EnableA20:
+  mov ax, 2402h                ;--- A20-Gate Status ---
+  int 15h
+  jb  PrintDisabledA20              ;couldn't get status
+  cmp ah, 0
+  jnz PrintDisabledA20
+  cmp al, 1
+  jz  PrintEnableA20
+
+  mov si, TryMsg
+  call Puts16
+
+  mov ax, 0x2401
+  int 0x15
+  jb PrintDisabledA20
+  cmp     ah,0
+  jnz  PrintDisabledA20
 
 PrintEnableA20:
   mov si, EnabledA20
   call Puts16
   jmp Pmode
 
-EnableA20:
-  mov cl, 10h
-
-loop:
-  mov ax, 0x2401
-  int 0x15
-
-  mov si, TryMsg
-  call Puts16
-
-  mov ax, 0x2403
-  int 0x15
-  jc PrintEnableA20
-
-  dec cl
-  jne loop
-
 PrintDisabledA20:
   mov si, DisabledA20
   call Puts16
+  jmp Pmode
+
+PrintNSA20:
+  mov si, NSA20
+  call Puts16
+  jmp Pmode
 
 	;-------------------------------;
 	;   Go into pmode		;
