@@ -293,6 +293,7 @@ DONE:
 
   mov     si, msgCRLF
   call    Print
+  ; test with call 0x50:0x00, seems to be the same
   push    WORD 0x0050
   push    WORD 0x0000
   retf
