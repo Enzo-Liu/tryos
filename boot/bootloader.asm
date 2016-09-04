@@ -294,9 +294,14 @@ DONE:
   mov     si, msgCRLF
   call    Print
   ; test with call 0x50:0x00, seems to be the same
-  push    WORD 0x0050
-  push    WORD 0x0000
-  retf
+  ; since call will push current address in the stack
+  ; maybe jmp is more appropriate
+  jmp 0x50:0x00
+  ; I don't really get the pointer why to use retf, so
+  ; comment it out and test with jmp
+  ; push    WORD 0x0050
+  ; push    WORD 0x0000
+  ; retf
 
 FAILURE:
 
