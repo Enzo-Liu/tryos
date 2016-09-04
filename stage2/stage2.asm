@@ -17,17 +17,13 @@ org 0x500
 
 %include "stdio.asm"			; basic i/o routines
 %include "gdt.asm"			; Gdt routines
+%include "a20.asm"
 
   ;*******************************************************
   ;	Data Section
   ;*******************************************************
 
   LoadingMsg db "Preparing to load operating system...hahxx", 0x0D, 0x0A, 0x00
-  EnabledA20 db "it has enabled a20", 0dh, 0ah, 0h
-  DisabledA20 db "it has disabled a20", 0dh, 0ah, 0h
-  NSA20 db "not support for a20", 0dh, 0ah, 0h
-  TryMsg db "has try to set a20", 0dh, 0ah, 0h
-
 
   ;*******************************************************
   ;	STAGE 2 ENTRY POINT
@@ -65,46 +61,8 @@ main:
 	;-------------------------------;
 
 	call	InstallGDT		; install our GDT
+  call  InstallA20    ; install A20 line
 
-A20Support:
-  mov ax, 0x2403
-  int 0x15
-  jb PrintNSA20
-  cmp ah, 0
-  jnz PrintNSA20
-
-EnableA20:
-  mov ax, 2402h                ;--- A20-Gate Status ---
-  int 15h
-  jb  PrintDisabledA20              ;couldn't get status
-  cmp ah, 0
-  jnz PrintDisabledA20
-  cmp al, 1
-  jz  PrintEnableA20
-
-  mov si, TryMsg
-  call Puts16
-
-  mov ax, 0x2401
-  int 0x15
-  jb PrintDisabledA20
-  cmp     ah,0
-  jnz  PrintDisabledA20
-
-PrintEnableA20:
-  mov si, EnabledA20
-  call Puts16
-  jmp Pmode
-
-PrintDisabledA20:
-  mov si, DisabledA20
-  call Puts16
-  jmp Pmode
-
-PrintNSA20:
-  mov si, NSA20
-  call Puts16
-  jmp Pmode
 
 	;-------------------------------;
 	;   Go into pmode		;
