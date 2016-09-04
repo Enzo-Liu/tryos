@@ -24,7 +24,10 @@ org 0x500
   ;*******************************************************
 
 LoadingMsg: db "Preparing to load operating system...hahxx", 0x0D, 0x0A, 0x00
-msg:  db 0ah, 0ah, "CLSDasdfsdfF", 0
+msg:
+  db 0ah, 0ah, "    try the video text mode"
+  db 0ah, 0ah, "         ha ha ha       ", 0
+
 
   ;*******************************************************
   ;	STAGE 2 ENTRY POINT
@@ -97,7 +100,7 @@ Stage3:
 	mov		es, ax
 	mov		esp, 90000h		; stack begins from 90000h
 
-
+  call Clr32
 
   mov ebx, msg
   call Puts32

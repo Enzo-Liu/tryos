@@ -41,19 +41,20 @@ bits 32
 Putch32:
   pusha
 	mov	edi, VIDMEM		; get pointer to video memory
+  xor eax, eax
 
   mov cl, COLS
   mov al, byte [_CurY]
   mul cl
   mov ecx, eax
 
+  xor eax, eax
   mov al, byte [_CurX]
 
   add eax, ecx
-  mov cl, 2
-  mul cl
+  mov ecx, 2
+  mul ecx
 
-	xor	ecx, ecx
 	add	edi, eax
 
   cmp	bl, 0x0A		; is it a newline character?
@@ -75,7 +76,6 @@ Putch32:
 .Done:
   popa
   ret
-
 
 Puts32:
   pusha
@@ -99,6 +99,20 @@ Puts32:
 	; call	MovCur			; update cursor
 
 	popa				; restore registers, and return
+	ret
+
+Clr32:
+  pusha
+	cld
+	mov	edi, VIDMEM
+	mov	cx, 2000
+	mov	ah, CHAR_ATTRIB
+	mov	al, ' '
+	rep	stosw
+
+	mov	byte [_CurX], 0
+	mov	byte [_CurY], 0
+	popa
 	ret
 
 %endif ;__STDIO_INC_67343546FDCC56AAB872_INCLUDED__
