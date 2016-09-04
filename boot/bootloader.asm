@@ -18,7 +18,7 @@ start:  jmp  main          ; jump to start of bootloader
   ; BPB Begins 3 bytes from start. We do a far jump, which is 3 bytes in size.
   ; If you use a short jump, add a "nop" after it to offset the 3rd byte.
 
-  bpbOEM      db "My OS   "      ; OEM identifier (Cannot exceed 8 bytes!)
+bpbOEM: db "My OS   "      ; OEM identifier (Cannot exceed 8 bytes!)
 bpbBytesPerSector:    DW 512
 bpbSectorsPerCluster:   DB 1
 bpbReservedSectors:   DW 1
