@@ -1,5 +1,15 @@
 * purpose
   try to implement a os kernel in haskell
+
+* progress
+
+- [X] bootloader
+- [X] pmode
+- [X] video text mode (mode 7)
+- [ ] figure out how to load kernel
+- [ ] load kernel
+- [ ] load a kernal written by haskell...
+
 * how to run
 
    #+BEGIN_SRC shell
