@@ -96,21 +96,62 @@ Puts32:
 
 .done:
 
-	; mov	bh, byte [_CurY]	; get current position
-	; mov	bl, byte [_CurX]
-	; call	MovCur			; update cursor
+	mov	bh, byte [_CurY]	; get current position
+	mov	bl, byte [_CurX]
+	call MovCur			; update cursor
 
 	popa				; restore registers, and return
 	ret
 
+MovCur:
+
+	pusha
+
+	xor	eax, eax
+	mov	ecx, COLS
+	mov	al, bh			; get y pos
+	mul	ecx			; multiply y*COLS
+	add	al, bl			; Now add x
+	mov	ebx, eax
+
+	;--------------------------------------;
+	;   Set low byte index to VGA register ;
+	;--------------------------------------;
+
+	mov	al, 0x0f		; Cursor location low byte index
+	mov	dx, 0x03D4		; Write it to the CRT index register
+	out	dx, al
+
+	mov	al, bl			; The current location is in EBX. BL contains the low byte, BH high byte
+	mov	dx, 0x03D5		; Write it to the data register
+	out	dx, al			; low byte
+
+	;---------------------------------------;
+	;   Set high byte index to VGA register ;
+	;---------------------------------------;
+
+	xor	eax, eax
+
+	mov	al, 0x0e		; Cursor location high byte index
+	mov	dx, 0x03D4		; Write to the CRT index register
+	out	dx, al
+
+	mov	al, bh			; the current location is in EBX. BL contains low byte, BH high byte
+	mov	dx, 0x03D5		; Write it to the data register
+	out	dx, al			; high byte
+
+	popa
+	ret
+
 Clr32:
   pusha
-	cld
+	cld                           ; clear direction --- make sure the direction is increasing
 	mov	edi, VIDMEM
-	mov	cx, 2000
+	mov	cx, 2000                  ; COLS * LINES = 80 * 25 = 2000
 	mov	ah, CHAR_ATTRIB
 	mov	al, ' '
-	rep	stosw
+  ; stosw: store string word
+	rep	stosw                     ; repeat cx times to copy value in ax to edi:VIDMEM-(VIDMEM+2000)
 
 	mov	byte [_CurX], 0
 	mov	byte [_CurY], 0
