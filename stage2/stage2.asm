@@ -23,7 +23,8 @@ org 0x500
   ;	Data Section
   ;*******************************************************
 
-  LoadingMsg db "Preparing to load operating system...hahxx", 0x0D, 0x0A, 0x00
+LoadingMsg: db "Preparing to load operating system...hahxx", 0x0D, 0x0A, 0x00
+msg:  db 0ah, 0ah, "CLSDasdfsdfF", 0
 
   ;*******************************************************
   ;	STAGE 2 ENTRY POINT
@@ -83,10 +84,6 @@ Pmode:
   ;******************************************************
 
 bits 32					; Welcome to the 32 bit world!
-%define	VIDMEM	0xB8000		; video memory
-%define		COLS	80			; width and height of screen
-%define		LINES	25
-%define		CHAR_ATTRIB 14			; character attribute (White text on black background)
 
 Stage3:
 
@@ -100,16 +97,15 @@ Stage3:
 	mov		es, ax
 	mov		esp, 90000h		; stack begins from 90000h
 
-	mov	edi, VIDMEM		; get pointer to video memory
-	mov	byte [edi], 'A'		; print character 'A'
-	mov	byte [edi+1], 0x7		; character attribute
-	mov	byte [edi+2], 'B'		; print character 'A'
-	mov	byte [edi+3], 0x7		; character attribute
+
+
+  mov ebx, msg
+  call Puts32
+
   ;*******************************************************
   ;	Stop execution
   ;*******************************************************
 
 STOP:
-
 	cli
 	hlt
