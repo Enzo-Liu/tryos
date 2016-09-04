@@ -40,21 +40,23 @@ bits 32
 
 Putch32:
   pusha
-	mov	edi, VIDMEM		; get pointer to video memory
+
   xor eax, eax
 
   mov cl, COLS
   mov al, byte [_CurY]
   mul cl
-  mov ecx, eax
+  mov cx, ax
 
-  xor eax, eax
+  xor ah, ah
   mov al, byte [_CurX]
 
-  add eax, ecx
-  mov ecx, 2
-  mul ecx
+  add ax, cx
+  mov cx, 2
+  mul cx
 
+  ; pointer is (x + y * cols) * 2 + base
+	mov	edi, VIDMEM
 	add	edi, eax
 
   cmp	bl, 0x0A		; is it a newline character?
