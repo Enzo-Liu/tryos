@@ -83,6 +83,10 @@ Pmode:
   ;******************************************************
 
 bits 32					; Welcome to the 32 bit world!
+%define	VIDMEM	0xB8000		; video memory
+%define		COLS	80			; width and height of screen
+%define		LINES	25
+%define		CHAR_ATTRIB 14			; character attribute (White text on black background)
 
 Stage3:
 
@@ -96,6 +100,11 @@ Stage3:
 	mov		es, ax
 	mov		esp, 90000h		; stack begins from 90000h
 
+	mov	edi, VIDMEM		; get pointer to video memory
+	mov	byte [edi], 'A'		; print character 'A'
+	mov	byte [edi+1], 0x7		; character attribute
+	mov	byte [edi+2], 'B'		; print character 'A'
+	mov	byte [edi+3], 0x7		; character attribute
   ;*******************************************************
   ;	Stop execution
   ;*******************************************************

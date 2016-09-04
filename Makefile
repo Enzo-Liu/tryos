@@ -1,7 +1,10 @@
 OS := $(shell uname)
 
 run: target/tryos.img
-	qemu-system-x86_64 -boot a -drive format=raw,file=./target/tryos.img,index=0,if=floppy -curses # to supress qemu warning about raw format
+	qemu-system-x86_64 -boot a -drive format=raw,file=./target/tryos.img,index=0,if=floppy -curses
+
+graphics: target/tryos.img
+	qemu-system-x86_64 -boot a -drive format=raw,file=./target/tryos.img,index=0,if=floppy
 
 target/tryos.img: target/stage2.img target/bootloader.bin
 	dd bs=512 count=2880 if=/dev/zero of=./target/tryos.img
