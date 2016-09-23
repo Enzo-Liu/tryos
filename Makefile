@@ -10,7 +10,7 @@ endif
 ifeq ($(OS), Darwin)
 define copy_to_fat12
 	disk=$$(hdiutil attach -nomount $1) && \
-	mount_msdos $$disk $2 && \
+	mount -t msdos $$disk $2 && \
 	cp $3 $2 && \
 	umount $$disk && \
 	hdiutil detach $$disk
