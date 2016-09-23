@@ -28,8 +28,8 @@ endif
 target/stage2.img: target stage2/* include/*
 	nasm -f bin -i./include/ -o ./target/stage2.img ./stage2/stage2.asm
 
-target/bootloader.bin: target boot/bootloader.asm
-	nasm -f bin -o ./target/bootloader.bin ./boot/bootloader.asm
+target/bootloader.bin: target boot/bootloader.asm include/print16.asm include/fat12.asm
+	nasm -f bin -i./include/ -o ./target/bootloader.bin ./boot/bootloader.asm
 
 target:
 	mkdir -p ./target

@@ -28,7 +28,7 @@ EnableA20:
   jz   PrintEnableA20
 
   mov  si, TryMsg
-  call Puts16
+  call Print16
 
   mov  ax, 0x2401
   int  0x15
@@ -38,17 +38,17 @@ EnableA20:
 
 PrintEnableA20:
   mov  si, EnabledA20
-  call Puts16
+  call Print16
   jmp  A20Done
 
 PrintDisabledA20:
   mov  si, DisabledA20
-  call Puts16
+  call Print16
   jmp  A20Done
 
 PrintNSA20:
   mov  si, NSA20
-  call Puts16
+  call Print16
   jmp  A20Done
 
 A20Done:

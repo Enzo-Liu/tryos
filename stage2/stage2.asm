@@ -15,8 +15,9 @@ org 0x500                       ; loaded at (0x50:0x00) 0x50*0x10+0x00 = 0x500
   ;	Preprocessor directives
   ;*******************************************************
 
-%include "stdio.asm"			; basic i/o routines
-%include "gdt.asm"			; Gdt routines
+%include "print16.asm"
+%include "stdio.asm"
+%include "gdt.asm"
 %include "a20.asm"
 
   ;*******************************************************
@@ -58,7 +59,7 @@ main:
 	;-------------------------------;
 
 	mov	si, LoadingMsg
-	call	Puts16
+	call	Print16
 
 	;-------------------------------;
 	;   Install our GDT		;
