@@ -34,7 +34,7 @@ target/tryos.img: target/tryos.sys target/bootloader.bin
 target/tryos.sys: target stage2/* include/*
 	nasm -f bin -i./include/ -o ./target/tryos.sys ./stage2/stage2.asm
 
-target/bootloader.bin: target boot/bootloader.asm include/print16.asm include/fat12.asm
+target/bootloader.bin: target boot/* include/*
 	nasm -f bin -i./include/ -o ./target/bootloader.bin ./boot/bootloader.asm
 
 target:
