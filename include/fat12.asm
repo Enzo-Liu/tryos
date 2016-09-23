@@ -205,14 +205,6 @@ FINISH:
   popa
   ret
 
-
-  mov     si, msgFailure
-  call    Print16
-  mov     ah, 0x00
-  int     0x16                                ; await keypress
-  int     0x19                                ; warm boot computer
-
-
 absoluteSector: db 0x00
 absoluteHead: db 0x00
 absoluteTrack:  db 0x00
