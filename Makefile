@@ -2,7 +2,7 @@ OS := $(shell uname)
 
 ifeq ($(OS), Linux)
 define copy_to_fat12
-	sudo mount -o loop $1 $2
+	sudo mount -t msdos -o loop,fat=12 $1 $2
 	sudo cp $3 $2
 	sudo umount $2
 endef
