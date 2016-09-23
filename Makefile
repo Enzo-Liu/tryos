@@ -2,7 +2,6 @@ OS := $(shell uname)
 
 ifeq ($(OS), Linux)
 define copy_to_fat12
-	mkfs.msdos $1
 	sudo mount -o loop $1 $2
 	sudo cp $3 $2
 	sudo umount $2
@@ -29,7 +28,6 @@ target/tryos.img: target/tryos.sys target/bootloader.bin
 	dd status=noxfer conv=notrunc if=./target/bootloader.bin of=./target/tryos.img
 	mkdir -p ./target/tryos
 	$(call copy_to_fat12, ./target/tryos.img, ./target/tryos/, ./target/tryos.sys)
-	dd status=noxfer conv=notrunc if=./target/bootloader.bin of=./target/tryos.img
 
 target/tryos.sys: target stage2/* include/*
 	nasm -f bin -i./include/ -o ./target/tryos.sys ./stage2/stage2.asm
