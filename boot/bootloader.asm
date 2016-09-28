@@ -31,11 +31,11 @@ bsSerialNumber:          DD 0xa0a1a2a3
 bsVolumeLabel:           DB "TOS FLOPPY "
 bsFileSystem:           DB "FAT12   "
 
-  ImageName   db "TRYOS   SYS"
-  msgCRLF     db 0x0D, 0x0A, 0x00
-  msgLoading  db 0x0D, 0x0A, "Loading Boot Image ", 0x0D, 0x0A, 0x00
-  msgProgress db ".", 0x00
-  msgFailure  db 0x0D, 0x0A, "ERROR : Press Any Key to Reboot", 0x0A, 0x00
+ImageName:  db "TRYOS   SYS"
+msgCRLF:  db 0x0D, 0x0A, 0x00
+msgLoading: db 0x0D, 0x0A, "Loading Boot Image ", 0x0D, 0x0A, 0x00
+msgProgress:  db ".", 0x00
+msgFailure: db 0x0D, 0x0A, "ERROR : Press Any Key to Reboot", 0x0A, 0x00
 
 %include "print16.asm"
 %include "fat12.asm"

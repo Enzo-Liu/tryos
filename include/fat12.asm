@@ -41,11 +41,13 @@ ReadSectors:
   ;************************************************;
 
 ClusterLBA:
+  push    cx
   sub     ax, 0x0002                          ; zero base cluster number
   xor     cx, cx
   mov     cl, BYTE [bpbSectorsPerCluster]     ; convert byte to word
   mul     cx
   add     ax, WORD [datasector]               ; base data sector
+  pop     cx
   ret
 
   ;************************************************;
@@ -59,6 +61,7 @@ ClusterLBA:
   ;************************************************;
 
 LBACHS:
+  push    dx
   xor     dx, dx                              ; prepare dx:ax for operation
   div     WORD [bpbSectorsPerTrack]           ; calculate
   inc     dl                                  ; adjust for sector 0
@@ -67,6 +70,7 @@ LBACHS:
   div     WORD [bpbHeadsPerCylinder]          ; calculate
   mov     BYTE [absoluteHead], dl
   mov     BYTE [absoluteTrack], al
+  pop     dx
   ret
 
 LOAD_ROOT:

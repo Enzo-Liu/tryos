@@ -7,6 +7,7 @@ define copy_to_fat12
 	sudo umount $2
 endef
 endif
+
 ifeq ($(OS), Darwin)
 define copy_to_fat12
 	disk=$$(hdiutil attach -nomount $1) && \
