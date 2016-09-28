@@ -54,34 +54,34 @@ main:
   ;----------------------------------------------------
 
   cli            ; disable interrupts
-  mov     ax, 0x07C0        ; setup registers to point to our segment
-  mov     ds, ax
-  mov     es, ax
-  mov     fs, ax
-  mov     gs, ax
+  mov       ax, 0x07C0        ; setup registers to point to our segment
+  mov       ds, ax
+  mov       es, ax
+  mov       fs, ax
+  mov       gs, ax
 
   ;----------------------------------------------------
   ; create stack
   ;----------------------------------------------------
 
-  mov     ax, 0x0000        ; set the stack
-  mov     ss, ax
-  mov     sp, 0xFFFF
+  mov       ax, 0x0000        ; set the stack
+  mov       ss, ax
+  mov       sp, 0xFFFF
   sti            ; restore interrupts
 
   ;----------------------------------------------------
   ; Load root directory table
   ;----------------------------------------------------
-  call LOAD_ROOT
-  jc REBOOT
+  call      LOAD_ROOT
+  jc        REBOOT
 
-  mov     si, msgCRLF
-  call    Print16
+  mov       si, msgCRLF
+  call      Print16
 
   ; test with call 0x50:0x00, seems to be the same
   ; since call will push current address in the stack
   ; maybe jmp is more appropriate
-  jmp 0x50:0x00
+  jmp       0x50:0x00
   ; I don't really get the pointer why to use retf, so
   ; comment it out and test with jmp
   ; push    WORD 0x0050
@@ -89,13 +89,13 @@ main:
   ; retf
 
 REBOOT:
-  mov     si, msgFailure
-  call    Print16
+  mov       si, msgFailure
+  call      Print16
 
-  mov     ah, 0x00
-  int     0x16                                ; await keypress
-  int     0x19                                ; warm boot computer
+  mov       ah, 0x00
+  int       0x16                                ; await keypress
+  int       0x19                                ; warm boot computer
 
 
-  TIMES 510-($-$$) DB 0
-  DW 0xAA55
+  TIMES     510-($-$$) DB 0
+  DW        0xAA55
